@@ -81,26 +81,75 @@
     <section class="welcome_section layout_padding">
       <div class="container">
         <div class="custom_heading-container">
-          <h2>
-            Curso
-          </h2>
+            <h1>Pregunta:</h1>
         </div>
         <div class="layout_padding2">
-          <div class="img-box">
-            <img src="images/welcome.png" alt=""/>
-          </div>
-          <div class="detail-box">
-            <p>
-              ¡Vamos a iniciar el curso!
-            </p>
-            <div>
-              <a href="comienzocurso.html">
-                Empezar
-              </a>
+            <div class="detail-box">
+                <p id="pregunta"></p>
+                <h2>Opciones:</h2>
+                <ul id="opciones"></ul>
+                <div>
+                    <a onclick="verificarRespuesta()">Verificar
+                    </a>
+                  </div>
+                <script>
+                    function cargarCarta() {
+                        // Llamada a PHP para obtener una carta aleatoria
+                        fetch('ruta_al_archivo_php_que_obtiene_carta.php')
+                            .then(response => response.json())
+                            .then(data => mostrarCarta(data));
+                    }
+            
+                    function mostrarCarta(carta) {
+                        document.getElementById('pregunta').innerText = carta.pregunta;
+            
+                        const opciones = [
+                            carta.respuesta_correcta,
+                            carta.respuesta_opcion1,
+                            carta.respuesta_opcion2,
+                            carta.respuesta_opcion3
+                        ];
+            
+                        // Barajar las opciones para que no siempre estén en el mismo orden
+                        opciones.sort(() => Math.random() - 0.5);
+            
+                        const opcionesList = document.getElementById('opciones');
+                        opcionesList.innerHTML = '';
+            
+                        opciones.forEach(opcion => {
+                            const listItem = document.createElement('li');
+                            listItem.innerText = opcion;
+                            opcionesList.appendChild(listItem);
+                        });
+                    }
+            
+                    function verificarRespuesta() {
+                        // Lógica para verificar la respuesta seleccionada por el usuario
+                        const opciones = document.getElementById('opciones');
+                        const opcionesSeleccionadas = opciones.querySelectorAll('li');
+            
+                        opcionesSeleccionadas.forEach(opcion => {
+                            opcion.addEventListener('click', function () {
+                                const respuestaUsuario = this.innerText;
+                                // Lógica para comparar con la respuesta correcta
+                                // Puedes enviar la respuesta al servidor (PHP) para actualizar el progreso, etc.
+                                console.log('Respuesta seleccionada: ' + respuestaUsuario);
+                            });
+                        });
+            
+                        // Cargar la siguiente carta
+                        cargarCarta();
+                    }
+            
+                    // Inicializar la primera carta al cargar la página
+                    cargarCarta();
+                </script>
+              
             </div>
           </div>
-        </div>
-  
+    
+        
+        
       </div>
     </section>
     <!-- end welcome section -->
